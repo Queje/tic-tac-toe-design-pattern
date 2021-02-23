@@ -14,6 +14,7 @@ class Morpion {
 		this.humanPlayer = firstPlayer;
 		this.iaPlayer = (firstPlayer === 'J1') ? 'J2' : 'J1';
         this.history = new Memento();
+        this.level = new AiLevel();
         if(localStorage.getItem('savedgame')){
             this.loadTheGame();
         }
@@ -21,6 +22,7 @@ class Morpion {
 	}
 
 	initGame = () => {
+        this.level.coucou();
         this.cleanTheGrid();
         console.log("int game:", this.gridMap)
 		this.gridMap.forEach((line, y) => {
@@ -135,8 +137,8 @@ class Morpion {
 		if (this.gameOver) {
 			return;
 		}
-
-        const { x, y } = this.minmax(this.gridMap, 0, -Infinity, Infinity, true);
+        
+        const { x, y } = this.handleSelect();
         this.drawHit(x, y, this.iaPlayer);
         this.history.addElement(this.gridMap);
         this.saveTheGame();
@@ -267,6 +269,17 @@ class Morpion {
     restart =() => {
         localStorage.clear();
         location.reload();
+    }
+
+    handleSelect =() => {
+        const input = document.getElementById('selectbutton')
+        const result = input.options[input.selectedIndex].value;
+        console.log(result)
+        if (result == 'hard') {
+            return this.level.minmax(this.gridMap, 0, -Infinity, Infinity, true);
+        } else {
+            return this.level.minmax(this.gridMap, 0, Infinity, -Infinity, true);
+        }
     }
 }
 

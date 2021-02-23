@@ -9,6 +9,12 @@
     </head>
     <body>
         <h1 class="title">The Hacking Morpion</h1>
+        <form onchange='morpion.handleSelect();'>
+            <select id='selectbutton' class="replay-button">
+                <option value="easy">easy mode</option>
+                <option selected value="hard">hard mode</option>
+            </select>
+        </form>
         <section class="game-grid">
             <div class="cell" id="A1"></div>
             <div class="cell" id="A2"></div>
@@ -29,6 +35,7 @@
         </section>
         <div class="end-message" id="end-message"></div>
         <script src="./memento.js"></script>
+        <script src="./ailevel.js"></script>
         <script src="./morpion.js"></script>
         <script>
             const morpion = new Morpion();
