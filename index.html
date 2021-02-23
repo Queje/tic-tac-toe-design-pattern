@@ -23,9 +23,12 @@
             <div class="cell" id="C3"></div>
         </section>
         <section class="actions">
-            <a class="replay-button" href="./index.html">Rejouer</a>
+            <button class='replay-button' onclick='morpion.handleUndo();'>Undo</button>
+            <button class="replay-button" onclick='morpion.restart();'>Rejouer</button>
+            <button class='replay-button' onclick='morpion.handleRedo();'>Redo</button>
         </section>
         <div class="end-message" id="end-message"></div>
+        <script src="./memento.js"></script>
         <script src="./morpion.js"></script>
         <script>
             const morpion = new Morpion();

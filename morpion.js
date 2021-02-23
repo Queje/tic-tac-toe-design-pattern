@@ -13,12 +13,19 @@ class Morpion {
 	constructor(firstPlayer = 'J1') {
 		this.humanPlayer = firstPlayer;
 		this.iaPlayer = (firstPlayer === 'J1') ? 'J2' : 'J1';
-		this.initGame();
+        this.history = new Memento();
+        if(localStorage.getItem('savedgame')){
+            this.loadTheGame();
+        }
+        this.initGame();
 	}
 
 	initGame = () => {
+        this.cleanTheGrid();
+        console.log("int game:", this.gridMap)
 		this.gridMap.forEach((line, y) => {
 			line.forEach((cell, x) => {
+                this.getCell(x, y).classList.add(`filled-${cell}`);
 				this.getCell(x, y).onclick = () => {
 					this.doPlayHuman(x, y);
 				};
@@ -102,6 +109,7 @@ class Morpion {
 	}
 
 	drawHit = (x, y, player) => {
+
 		if (this.gridMap[y][x] !== null) {
 			return false;
 		}
@@ -130,6 +138,8 @@ class Morpion {
 
         const { x, y } = this.minmax(this.gridMap, 0, -Infinity, Infinity, true);
         this.drawHit(x, y, this.iaPlayer);
+        this.history.addElement(this.gridMap);
+        this.saveTheGame();
 	}
 
     minmax = (board, depth, alpha, beta, isMaximizing) => {
@@ -217,4 +227,46 @@ class Morpion {
 
         return bestHumanScore;
     }
+
+    cleanTheGrid =() => {
+        this.gridMap.forEach((line, y) => {
+			line.forEach((cell, x) => {
+                this.getCell(x, y).classList.remove(`filled-J1`);              
+                this.getCell(x, y).classList.remove(`filled-J2`);
+                }
+			);
+		});
+    }
+    
+    handleUndo = () => {
+        const temphistory = this.history.undo();
+        if (temphistory) {
+            this.gridMap = temphistory
+            this.saveTheGame();
+            this.initGame();
+        }
+    }
+
+    handleRedo = () => {
+        const temphistory = this.history.redo(); 
+        if (temphistory) {
+            this.gridMap = temphistory;
+            this.saveTheGame();
+            this.initGame();
+        } 
+    }
+
+    saveTheGame =() => {
+        localStorage.setItem('savedgame', JSON.stringify(this.gridMap))
+    }
+
+    loadTheGame =() => {
+        this.gridMap = JSON.parse(localStorage.getItem('savedgame'));
+    }
+
+    restart =() => {
+        localStorage.clear();
+        location.reload();
+    }
 }
+
